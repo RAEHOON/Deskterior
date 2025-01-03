@@ -50,6 +50,7 @@ import retrofit2.Response;
 /***
  * 홈프레그먼트에 상단 버튼 리스트 와 피드를 합친 어댑터
  * 두 가지 뷰타입(ViewType)을  RecyclerView 에 넣어줌
+ * 깃테스트테스트테스트
  */
 
 public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
