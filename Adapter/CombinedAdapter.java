@@ -36,6 +36,7 @@ import com.example.desk0014.Tag.TagListDialog;
 import com.example.desk0014.Tag.WebViewActivity;
 import com.example.desk0014.Topmenu.Buttontop;
 import com.example.desk0014.Users.Feed;
+import com.example.desk0014.Users.MiniMenuDialog;
 import com.google.gson.Gson;
 
 
@@ -159,23 +160,41 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 feedViewHolder.bind(feed, clientTagLists); // 피드 데이터를 뷰에 연결
                 Log.d(TAG, "onBindViewHolder: feedViewHolder에 데이터 바인딩 완료");
                 // 버튼 클릭 이벤트 추가
-                feedViewHolder.buttonTagList.setOnClickListener(v -> {
-                    int feedCount = feed.getFeedCount(); // 해당 피드의 feed_count
+                feedViewHolder.buttonMinimenu.setOnClickListener(v -> {
 
+                    MiniMenuDialog miniMenuDialog = new MiniMenuDialog(holder.itemView.getContext(), new MiniMenuDialog.OnMiniMenuActionListener() {
+                        @Override
+                        public void onShowTags() {
+                            int feedCount = feed.getFeedCount(); // 해당 피드의 feed_count
+                            int imageCount = -1; // 초기값 설정
+                            if (feed.getImageList() != null) {
+                                // ViewPager2의 현재 페이지 위치에서 이미지 카운트 가져오기
+                                int currentImagePosition = feedViewHolder.viewPagerImages.getCurrentItem();
+                                Log.d(TAG, "현재 ViewPager 이미지 position: " + currentImagePosition);
 
-                    int imageCount = -1; // 초기값 설정
-                    if (feed.getImageList() != null) {
-                        // ViewPager2의 현재 페이지 위치에서 이미지 카운트 가져오기
-                        int currentImagePosition = feedViewHolder.viewPagerImages.getCurrentItem();
-                        Log.d(TAG, "현재 ViewPager 이미지 position: " + currentImagePosition);
+                                if (currentImagePosition < feed.getImageList().size()) {
+                                    imageCount = feed.getImageList().get(currentImagePosition).getImageCount();
+                                }
+                            }
+                            // TagListDialog를 띄움
+                            TagListDialog dialog = new TagListDialog(holder.itemView.getContext(), feedCount, imageCount);
+                            dialog.show();
 
-                        if (currentImagePosition < feed.getImageList().size()) {
-                            imageCount = feed.getImageList().get(currentImagePosition).getImageCount();
                         }
-                    }
-                    // TagListDialog를 띄움
-                    TagListDialog dialog = new TagListDialog(holder.itemView.getContext(), feedCount, imageCount);
-                    dialog.show();
+
+                        @Override
+                        public void onEditPost() {
+
+                        }
+
+                        @Override
+                        public void onDeletePost() {
+
+                        }
+                    });
+                    // MiniMenuDialog 표시
+                    miniMenuDialog.show();
+
                 });
 
                 // 태그 추가 버튼 클릭 이벤트
@@ -371,7 +390,7 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         CircleIndicator3 indicator;
         Button btnFollow;
         ImageView addTagButton;
-        ImageView buttonTagList;
+        ImageView buttonMinimenu;
         FrameLayout tagContainer;
 
         public FeedViewHolder(@NonNull View itemView) {
@@ -410,7 +429,7 @@ public class CombinedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tagContainer = itemView.findViewById(R.id.tag_container);
             //프레임레이아웃 연결
             Log.d(TAG, "FeedViewHolder: tag_container 연결");
-            buttonTagList = itemView.findViewById(R.id.button_taglist);
+            buttonMinimenu = itemView.findViewById(R.id.button_minimenu);
             tagViews = new ArrayList<>();
         }
 
